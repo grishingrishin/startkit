@@ -1,4 +1,4 @@
-const { src, dest, series } = require('gulp');
+const { src, dest, series, parallel } = require('gulp');
 const $ = require('gulp-load-plugins')();
 
 $.sass.compiler = require('node-sass');
@@ -76,8 +76,8 @@ function fonts() {
 }
 
 function images() {
-  return src('app/images/**/*', { since: lastRun(images) })
-    .pipe(dest('dist/images'));
+  return src('app/images/**/*.{png,jpg}', { since: lastRun(images) })
+    .pipe($.if(!isProd, dest('.tmp/images'), dest('dist/images')));
 }
 
 const build = series(clean, fonts, images, parallel(styles, scripts), html);
