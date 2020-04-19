@@ -1,4 +1,4 @@
-const { src, dest, series, parallel } = require('gulp');
+const { src, dest, series, parallel, lastRun } = require('gulp');
 const $ = require('gulp-load-plugins')();
 
 $.sass.compiler = require('node-sass');
@@ -11,17 +11,22 @@ function clean() {
 }
 
 function html() {
-  return src('app/*.html')
+  return src('app/pages/*.pug')
     .pipe($.plumber({
       errorHandler: err => {
         $.notify.onError({
-          title: 'Error on html',
+          title: 'Error on pug',
           message: err.message
         })(err)
       }
     }))
-    .pipe($.debug({ title: 'Build HTML' }))
-    .pipe(dest());
+    .pipe($.pugLint())
+    .pipe($.pug({
+      pretty: true
+    }))
+    .pipe($.w3cHtmlValidator())
+    // .pipe($.w3cHtmlValidator.reporter())
+    .pipe(dest('.tmp'));
 }
 
 function styles() {
@@ -34,18 +39,25 @@ function styles() {
         })(err)
       }
     }))
-    .pipe($.debug({ 
-      title: 'Build styles' 
+    .pipe($.stylelint({
+      reporters: [
+        {
+          formatter: 'string', 
+          console: true
+        }
+      ]
     }))
-    .pipe($.if(!isProd, sourcemaps.init()))
+    .pipe($.if(!isProd, $.sourcemaps.init()))
     .pipe($.sass(
       $.if(!isProd, {
         outputStyle: 'compressed'
       })
-    ).on('error', sass.logError))
+    ).on('error', $.sass.logError))
     .pipe($.autoprefixer())
-    .pipe($.if(!isProd, sourcemaps.write()))
-    .pipe(dest('.tmp/scripts'));
+    .pipe($.shorthand())
+    .pipe($.if(!isProd, $.sourcemaps.write()))
+    .pipe($.if(isProd, $.rename({ suffix: '.min' })))
+    .pipe(dest('.tmp/styles'));
 }
 
 function scripts() {
@@ -58,15 +70,16 @@ function scripts() {
         })(err)
       }
     }))
-    .pipe($.debug({ 
-      title: 'Build js' 
-    }))
-    .pipe($.if(!isProd, sourcemaps.init()))
+    .pipe($.eslint())
+    .pipe($.eslint.format())
+    .pipe($.eslint.failAfterError())
+    .pipe($.if(!isProd, $.sourcemaps.init()))
     .pipe($.babel({
       presets: ['@babel/env']
     }))
-    .pipe($.if(!isProd, uglify()))
-    .pipe($.if(!isProd, sourcemaps.write()))
+    .pipe($.if(!isProd, $.uglify()))
+    .pipe($.if(!isProd, $.sourcemaps.write()))
+    .pipe($.if(isProd, $.rename({ suffix: '.min' })))
     .pipe(dest('.tmp/scripts'));
 }
 
@@ -80,11 +93,9 @@ function images() {
     .pipe($.if(!isProd, dest('.tmp/images'), dest('dist/images')));
 }
 
-const build = series(clean, fonts, images, parallel(styles, scripts), html);
+const build = series(fonts, images, parallel(styles, scripts), html);
 
 exports.build = build;
 exports.default = build;
 
-// Js lint
-// Css lint
-// HTML w3c valigator
+//TODO: Проверка на валидацию перед финальной сборкой или пушингом HTML, CSS, JS

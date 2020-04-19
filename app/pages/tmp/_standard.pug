@@ -1,0 +1,30 @@
+doctype
+
+html(lang="ru")
+  head
+    meta(charset="utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover")
+
+    block title
+
+    meta(name="description" content="Description of the page less than 150 characters")
+
+    //- To run web application in full-screen
+    meta(name="apple-mobile-web-app-capable" content="yes")
+
+    //- Status Bar Style (see Supported Meta Tags below for available values)
+    //- Has no effect unless you have the previous meta tag
+    meta(name="apple-mobile-web-app-status-bar-style" content="black")
+
+    //- If you have only a favicon.ico, put it at the root of your site.
+    //- Normally you won't need to use any markup. However,
+    //- it's still good practice to link to it using the example below. Today,
+    //- PNG format is recommended over .ico format (dimensions: 32x32px).
+    link(rel="icon" type="image/png" href="https://example.com/favicon.png")
+
+    //- Custom styles contain reset styles.
+    link(rel="stylesheet", href="main.css")
+  body
+    block content
+
+    script(type="text/javascript" src="main.js")
