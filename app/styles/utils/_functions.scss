@@ -2,6 +2,7 @@
   @if (unitless($pixels)) {
     $pixels: $pixels * 1px;
   }
+
   @if (unitless($context)) {
     $context: $context * 1px;
   }
@@ -13,6 +14,7 @@
   @if (unitless($pixels)) {
     $pixels: $pixels * 1px;
   }
+
   @if (unitless($context)) {
     $context: $context * 1px;
   }

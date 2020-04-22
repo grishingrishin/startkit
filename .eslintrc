@@ -1,0 +1,13 @@
+{
+  "extends": [
+    "standard",
+    "eslint:recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:node/recommended",
+    "plugin:promise/recommended"
+  ],
+  "env": {
+    "jquery": true
+  }
+}
