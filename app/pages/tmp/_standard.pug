@@ -22,8 +22,14 @@ html(lang="ru")
     //- PNG format is recommended over .ico format (dimensions: 32x32px).
     link(rel="icon" type="image/png" href="https://example.com/favicon.png")
 
-    //- Custom styles contain reset styles.
+    // build:css styles/vendor.css
+    link(rel="stylesheet", href="/node_modules/normalize.css/normalize.css")
+    link(rel="stylesheet", href="/node_modules/purecss/build/grids.css")
+    // endbuild
+    
+    // build:css styles/main.css
     link(rel="stylesheet", href="main.css")
+    // endbuild
   body
     block content
 

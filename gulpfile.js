@@ -1,8 +1,6 @@
-/* eslint-disable space-before-function-paren */
-/* eslint-disable node/no-unpublished-require */
 const { src, dest, watch, series, parallel, lastRun } = require('gulp')
 const $ = require('gulp-load-plugins')()
-const server = require('browser-sync').create()
+const browserSync = require('browser-sync').create()
 const del = require('del')
 
 $.sass.compiler = require('node-sass')
@@ -25,13 +23,10 @@ function html() {
       }
     }))
     .pipe($.pugLinter({ reporter: 'default' }))
-    .pipe($.pug({
-      pretty: true
-    }))
-    .pipe($.w3cHtmlValidator())
-    // .pipe($.w3cHtmlValidator.reporter())
-    .pipe($.if(!isProd, dest('.tmp'), dest('dist')))
-    .pipe(server.reload({ stream: true }))
+    .pipe($.pug({ pretty: true }))
+    .pipe($.if(isProd, $.useref({ searchPath: ['.tmp', '.'] })))
+    .pipe($.if(isProd, dest('dist'), dest('.tmp')))
+    .pipe(browserSync.reload({ stream: true }))
 }
 
 function styles() {
@@ -44,26 +39,14 @@ function styles() {
         })(err)
       }
     }))
-    .pipe($.stylelint({
-      reporters: [
-        {
-          formatter: 'string',
-          console: true
-        }
-      ]
-    }))
     .pipe($.if(!isProd, $.sourcemaps.init()))
-    .pipe($.sass(
-      $.if(isProd, {
-        outputStyle: 'compressed'
-      }
-      )).on('error', $.sass.logError))
+    .pipe($.sass($.if(isProd, { outputStyle: 'compressed' }))
+      .on('error', $.sass.logError))
     .pipe($.autoprefixer())
     .pipe($.shorthand())
     .pipe($.if(!isProd, $.sourcemaps.write()))
-    .pipe($.if(isProd, $.rename({ suffix: '.min' })))
     .pipe($.if(!isProd, dest('.tmp/styles'), dest('dist/styles')))
-    .pipe(server.reload({ stream: true }))
+    .pipe(browserSync.reload({ stream: true }))
 }
 
 function scripts() {
@@ -76,19 +59,13 @@ function scripts() {
         })(err)
       }
     }))
-    .pipe($.eslint())
-    .pipe($.eslint.format())
-    .pipe($.eslint.failAfterError())
     .pipe($.if(!isProd, $.sourcemaps.init()))
-    .pipe($.babel({
-      presets: ['@babel/env']
-    }))
+    .pipe($.babel({ presets: ['@babel/env'] }))
     .pipe($.if(!isProd, $.uglify()))
     .pipe($.if(!isProd, $.sourcemaps.write()))
     .pipe($.concat('main.js'))
-    .pipe($.if(isProd, $.rename({ suffix: '.min' })))
     .pipe($.if(!isProd, dest('.tmp/scripts'), dest('dist/scripts')))
-    .pipe(server.reload({ stream: true }))
+    .pipe(browserSync.reload({ stream: true }))
 }
 
 function fonts() {
@@ -101,12 +78,12 @@ function images() {
     .pipe($.if(!isProd, dest('.tmp/images'), dest('dist/images')))
 }
 
-const startAppServer = () => {
-  server.init({
+const server = () => {
+  browserSync.init({
     notify: false,
     port,
     server: {
-      baseDir: ['.tmp', 'app'],
+      baseDir: '.tmp',
       routes: {
         '/node_modules': 'node_modules'
       }
@@ -116,32 +93,15 @@ const startAppServer = () => {
   watch([
     'app/images/**/*',
     'app/fonts/**/*'
-  ]).on('change', server.reload)
+  ]).on('change', browserSync.reload)
 
-  watch('app/pages/**/*.pug')
+  watch('app/pages/**/*.pug', html)
   watch('app/styles/**/*.scss', styles)
   watch('app/scripts/**/*.js', scripts)
-}
-
-const startDistServer = () => {
-  server.init({
-    notify: false,
-    port,
-    server: {
-      baseDir: 'dist',
-      routes: {
-        '/node_modules': 'node_modules'
-      }
-    }
-  })
 }
 
 const build = series(clean, fonts, images, parallel(styles, scripts, html))
 
 exports.build = build
 
-exports.server = isProd ? series(build, startDistServer) : series(build, startAppServer)
-
-exports.default = build
-
-// TODO: Проверка на валидацию перед финальной сборкой или пушингом HTML, CSS, JS
+exports.default = series(build, server)

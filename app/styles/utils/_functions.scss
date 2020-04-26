@@ -1,4 +1,5 @@
 @function rem($pixels, $context: $font-size) {
+
   @if (unitless($pixels)) {
     $pixels: $pixels * 1px;
   }
@@ -11,6 +12,7 @@
 }
 
 @function em($pixels, $context: $font-size) {
+
   @if (unitless($pixels)) {
     $pixels: $pixels * 1px;
   }

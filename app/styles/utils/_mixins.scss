@@ -7,6 +7,7 @@
   $align-content: null,
   $justify-content: null,
   $gutter: null) {
+
   @if $display {
     display: $display;
   }
@@ -60,7 +61,9 @@
   $margin-top: null,
   $margin-bottom: null,
   $margin-both: null) {
+
   @if type-of($col) == number and unitless($col) == true {
+
     @if type-of($shorthand) == bool and $shorthand == true {
       flex: $flex-grow $flex-shrink (100% / $col);
     } @else {
@@ -71,6 +74,7 @@
   }
 
   @if type-of($col) == number and unitless($flex-basis) == false {
+
     @if type-of($shorthand) == bool and $shorthand == true {
       flex: $flex-grow $flex-shrink $flex-basis;
     } @else {
@@ -90,9 +94,7 @@
 
   @if type-of($width) == number and unitless($width) == false {
     width: $width;
-  }
-
-  @else if type-of($width) == string and $width == 'auto' {
+  } @else if type-of($width) == string and $width == 'auto' {
     width: auto;
   }
 
@@ -127,30 +129,35 @@
 }
 
 @mixin breakpoint-xs {
+
   @media screen and (max-width: #{$screen-xs}) {
     @content;
   }
 }
 
 @mixin breakpoint-sm {
+
   @media screen and (max-width: #{$screen-sm}) {
     @content;
   }
 }
 
 @mixin breakpoint-lg {
+
   @media screen and (max-width: #{$screen-lg}) {
     @content;
   }
 }
 
 @mixin breakpoint-xl {
+
   @media screen and (max-width: #{$screen-xl}) {
     @content;
   }
 }
 
 @mixin breakpoint-xxl {
+
   @media screen and (max-width: #{$screen-xxl}) {
     @content;
   }
