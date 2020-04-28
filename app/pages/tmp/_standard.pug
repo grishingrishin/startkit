@@ -22,9 +22,15 @@ html(lang="ru")
     //- PNG format is recommended over .ico format (dimensions: 32x32px).
     link(rel="icon" type="image/png" href="https://example.com/favicon.png")
 
-    // build:css styles/vendor.css
+    // build:css styles/normalize.css
     link(rel="stylesheet", href="/node_modules/normalize.css/normalize.css")
-    link(rel="stylesheet", href="/node_modules/purecss/build/grids.css")
+    // endbuild
+
+    // build:css styles/pure-css.css
+    link(rel="stylesheet", href="/node_modules/purecss/build/grids-min.css")
+    link(rel="stylesheet", href="/node_modules/purecss/build/grids-responsive-min.css")
+    link(rel="stylesheet", href="/node_modules/purecss/build/forms-min.css")
+    link(rel="stylesheet", href="/node_modules/purecss/build/buttons-min.css")
     // endbuild
     
     // build:css styles/main.css

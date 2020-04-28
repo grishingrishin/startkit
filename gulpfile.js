@@ -8,7 +8,7 @@ $.sass.compiler = require('node-sass')
 const port = process.env.PORT || 9000
 const isProd = process.env.NODE_ENV === 'production'
 
-function clean () {
+function clean() {
   return del(['.tmp', 'dist'])
 }
 
@@ -24,12 +24,11 @@ function html() {
     }))
     .pipe($.pugLinter({ reporter: 'default' }))
     .pipe($.pug({ pretty: true }))
-    .pipe($.if(isProd, $.useref({ searchPath: ['.tmp', '.'] })))
     .pipe($.if(isProd, dest('dist'), dest('.tmp')))
     .pipe(browserSync.reload({ stream: true }))
 }
 
-function styles() {
+function styles() { 
   return src('app/styles/**/*.scss')
     .pipe($.plumber({
       errorHandler: err => {
@@ -40,10 +39,8 @@ function styles() {
       }
     }))
     .pipe($.if(!isProd, $.sourcemaps.init()))
-    .pipe($.sass($.if(isProd, { outputStyle: 'compressed' }))
-      .on('error', $.sass.logError))
+    .pipe($.sass())
     .pipe($.autoprefixer())
-    .pipe($.shorthand())
     .pipe($.if(!isProd, $.sourcemaps.write()))
     .pipe($.if(!isProd, dest('.tmp/styles'), dest('dist/styles')))
     .pipe(browserSync.reload({ stream: true }))
@@ -61,8 +58,8 @@ function scripts() {
     }))
     .pipe($.if(!isProd, $.sourcemaps.init()))
     .pipe($.babel({ presets: ['@babel/env'] }))
-    .pipe($.if(!isProd, $.uglify()))
     .pipe($.if(!isProd, $.sourcemaps.write()))
+    // .pipe($.if(!isProd, $.uglify()))
     .pipe($.concat('main.js'))
     .pipe($.if(!isProd, dest('.tmp/scripts'), dest('dist/scripts')))
     .pipe(browserSync.reload({ stream: true }))
@@ -76,6 +73,13 @@ function fonts() {
 function images() {
   return src('app/images/**/*.{png,jpg}', { since: lastRun(images) })
     .pipe($.if(!isProd, dest('.tmp/images'), dest('dist/images')))
+}
+
+function useref() {
+  return src('dist/**/*.{html,scss,js}')
+    .pipe($.if(isProd, $.replace('/node_modules', 'node_modules')))
+    .pipe($.if(isProd, $.useref({ searchPath: [ 'dist', '.' ] })))
+    .pipe(dest('dist'));
 }
 
 const server = () => {
@@ -100,8 +104,8 @@ const server = () => {
   watch('app/scripts/**/*.js', scripts)
 }
 
-const build = series(clean, fonts, images, parallel(styles, scripts, html))
+const build = series(clean, fonts, images, parallel(styles, scripts), html)
 
-exports.build = build
+exports.build = series(build, useref)
 
 exports.default = series(build, server)
