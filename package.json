@@ -12,6 +12,11 @@
     "lint:scss": "stylelint --fix app/styles/**/*.scss",
     "lint:js": "eslint --fix app/scripts/**/*.js"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint:scss && npm run lint:js"
+    }
+  },
   "browserslist": [
     "> 1%",
     "last 2 versions",
@@ -46,6 +51,7 @@
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
     "gulp-useref": "^4.0.1",
+    "husky": "^4.2.5",
     "node-sass": "^4.13.1",
     "pug-lint": "^2.6.0",
     "stylelint": "^13.3.2",

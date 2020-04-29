@@ -58,9 +58,9 @@ function scripts() {
     }))
     .pipe($.if(!isProd, $.sourcemaps.init()))
     .pipe($.babel({ presets: ['@babel/env'] }))
-    .pipe($.if(!isProd, $.sourcemaps.write()))
-    // .pipe($.if(!isProd, $.uglify()))
     .pipe($.concat('main.js'))
+    // .pipe($.if(!isProd, $.uglify()))
+    .pipe($.if(!isProd, $.sourcemaps.write()))
     .pipe($.if(!isProd, dest('.tmp/scripts'), dest('dist/scripts')))
     .pipe(browserSync.reload({ stream: true }))
 }
@@ -77,8 +77,8 @@ function images() {
 
 function useref() {
   return src('dist/**/*.{html,scss,js}')
-    .pipe($.if(isProd, $.replace('/node_modules', 'node_modules')))
-    .pipe($.if(isProd, $.useref({ searchPath: [ 'dist', '.' ] })))
+    .pipe($.replace('/node_modules', 'node_modules'))
+    .pipe($.useref({ searchPath: [ 'dist', '.' ] }))
     .pipe(dest('dist'));
 }
 
