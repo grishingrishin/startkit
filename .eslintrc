@@ -9,5 +9,9 @@
   ],
   "env": {
     "jquery": true
+  },
+  "rules": {
+    "quotes": ["error", "single", { "avoidEscape": true }],
+    "semi": ["error", "always"]
   }
 }
