@@ -7,11 +7,18 @@
     "plugin:node/recommended",
     "plugin:promise/recommended"
   ],
+  "globals": {
+    "require": true
+  },
   "env": {
-    "jquery": true
+    "es6": true,
+    "jquery": true,
+    "commonjs": true,
+    "amd": true
   },
   "rules": {
     "quotes": ["error", "single", { "avoidEscape": true }],
-    "semi": ["error", "always"]
+    "semi": ["error", "always"],
+    "space-before-function-paren": ["error", { "anonymous": "always", "named": "never", "asyncArrow": "always" }]
   }
 }

@@ -9,8 +9,8 @@
   "scripts": {
     "start": "gulp",
     "build": "cross-env NODE_ENV=production gulp build",
-    "lint:scss": "stylelint --fix app/styles/**/*.scss",
-    "lint:js": "eslint --fix app/scripts/**/*.js"
+    "lint:scss": "stylelint --fix app/**/**/*.scss",
+    "lint:js": "eslint --fix app/**/**/*.js"
   },
   "husky": {
     "hooks": {

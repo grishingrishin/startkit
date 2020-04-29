@@ -1,2 +1,3 @@
 dist
+.tmp
 gulpfiles.js
