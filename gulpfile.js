@@ -42,7 +42,7 @@ function styles() {
     .pipe($.sass())
     .pipe($.autoprefixer())
     .pipe($.if(!isProd, $.sourcemaps.write()))
-    .pipe($.if(!isProd, dest('.tmp/styles'), dest('dist/styles')))
+    .pipe($.if(!isProd, dest('.tmp/styles'), dest('dist/css')))
     .pipe(browserSync.reload({ stream: true }));
 }
 
@@ -61,7 +61,7 @@ function scripts() {
     .pipe($.concat('main.js'))
     // .pipe($.if(!isProd, $.uglify()))
     .pipe($.if(!isProd, $.sourcemaps.write()))
-    .pipe($.if(!isProd, dest('.tmp/scripts'), dest('dist/scripts')))
+    .pipe($.if(!isProd, dest('.tmp/scripts'), dest('dist/js')))
     .pipe(browserSync.reload({ stream: true }));
 }
 
@@ -102,6 +102,8 @@ const server = () => {
   watch('app/pages/**/*.pug', html);
   watch('app/styles/**/*.scss', styles);
   watch('app/scripts/**/*.js', scripts);
+  watch('app/styles/**/*.{png,jpg}', images);
+  watch('app/scripts/**/*.{eot,svg,ttf,woff,woff2}', fonts);
 };
 
 const build = series(clean, fonts, images, parallel(styles, scripts), html);
