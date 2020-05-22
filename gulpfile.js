@@ -102,8 +102,8 @@ const server = () => {
   watch('app/pages/**/*.pug', html);
   watch('app/styles/**/*.scss', styles);
   watch('app/scripts/**/*.js', scripts);
-  watch('app/styles/**/*.{png,jpg}', images);
-  watch('app/scripts/**/*.{eot,svg,ttf,woff,woff2}', fonts);
+  watch('app/images/**/*.{png,jpg}', images);
+  watch('app/fonts/**/*.{eot,svg,ttf,woff,woff2}', fonts);
 };
 
 const build = series(clean, fonts, images, parallel(styles, scripts), html);
