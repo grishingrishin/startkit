@@ -71,7 +71,7 @@ function fonts() {
 }
 
 function images() {
-  return src('app/images/**/*.{png,jpg}', { since: lastRun(images) })
+  return src('app/images/**/**/**/*.{png,jpg,svg}', { since: lastRun(images) })
     .pipe($.if(!isProd, dest('.tmp/images'), dest('dist/images')));
 }
 
@@ -102,7 +102,7 @@ const server = () => {
   watch('app/pages/**/*.pug', html);
   watch('app/styles/**/*.scss', styles);
   watch('app/scripts/**/*.js', scripts);
-  watch('app/images/**/*.{png,jpg}', images);
+  watch('app/images/**/**/**/*.{png,jpg,svg}', images);
   watch('app/fonts/**/*.{eot,svg,ttf,woff,woff2}', fonts);
 };
 
